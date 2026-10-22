@@ -17,6 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from citas import views
+
 urlpatterns = [
+    path('', views.agenda_diaria, name='agenda_diaria'),
+    path('pacientes/nuevo/', views.nuevo_paciente, name='nuevo_paciente'),
+    path('citas/<int:cita_id>/atencion/', views.atender_cita, name='atender_cita'),
     path('admin/', admin.site.urls),
 ]

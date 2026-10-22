@@ -1,0 +1,32 @@
+{% extends "citas/base.html" %}
+
+{% block title %}Nuevo paciente | Huellas Sanas{% endblock %}
+
+{% block content %}
+    <div class="page-heading">
+        <div>
+            <div class="eyebrow">Recepción · Registro</div>
+            <h1>Nuevo paciente</h1>
+            <p class="subtitle">Guarda los datos del paciente y de su tutor.</p>
+        </div>
+    </div>
+
+    <form class="panel form-panel" method="post">
+        {% csrf_token %}
+        <div class="form-grid">
+            {% for field in form %}
+                <div class="field{% if field.name == 'observaciones' %} field-full{% endif %}">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}<p class="help">{{ field.help_text }}</p>{% endif %}
+                    {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+        {% for error in form.non_field_errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+        <div class="form-actions">
+            <a class="button secondary" href="{% url 'agenda_diaria' %}">Cancelar</a>
+            <button class="button" type="submit">Guardar paciente</button>
+        </div>
+    </form>
+{% endblock %}

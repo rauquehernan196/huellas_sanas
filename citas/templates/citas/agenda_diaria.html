@@ -1,0 +1,70 @@
+{% extends "citas/base.html" %}
+
+{% block title %}Agenda diaria | Huellas Sanas{% endblock %}
+
+{% block content %}
+    <div class="page-heading">
+        <div>
+            <div class="eyebrow">Panel de recepción</div>
+            <h1>Agenda de citas</h1>
+            <p class="subtitle">Consulta las visitas y recibe a cada paciente.</p>
+        </div>
+        <a class="button" href="{% url 'nuevo_paciente' %}"><span aria-hidden="true">＋</span> Registrar paciente</a>
+    </div>
+
+    {% if fecha_invalida %}
+        <div class="error-banner" role="alert">La fecha indicada no es válida. Selecciona una fecha para consultar la agenda.</div>
+    {% endif %}
+
+    <section class="panel" aria-labelledby="agenda-title">
+        <div class="toolbar">
+            <h2 id="agenda-title">Citas del día <span class="secondary-text">{{ fecha|date:"l, j \\d\\e F Y" }}</span></h2>
+            <form class="date-form" method="get">
+                <label class="eyebrow" for="fecha">Ver fecha</label>
+                <input type="date" id="fecha" name="fecha" value="{{ fecha|date:'Y-m-d' }}">
+                <button class="button secondary" type="submit">Consultar</button>
+            </form>
+        </div>
+        {% if citas %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">Hora</th>
+                            <th scope="col">Paciente</th>
+                            <th scope="col">Tutor</th>
+                            <th scope="col">Motivo</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Atención</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cita in citas %}
+                            <tr>
+                                <td><strong>{{ cita.hora|time:"H:i" }}</strong></td>
+                                <td>
+                                    <span class="pet-name">{{ cita.mascota.nombre }}</span>
+                                    <span class="secondary-text">{{ cita.mascota.especie }}{% if cita.mascota.raza %} · {{ cita.mascota.raza }}{% endif %}</span>
+                                </td>
+                                <td>{{ cita.mascota.nombre_dueno }}</td>
+                                <td>{{ cita.motivo_consulta|truncatechars:90 }}</td>
+                                <td><span class="status {{ cita.estado }}">{{ cita.get_estado_display }}</span></td>
+                                <td>
+                                    <a class="button secondary" href="{% url 'atender_cita' cita.id %}">
+                                        {% if cita.sintomas or cita.diagnostico %}Ver / editar{% else %}Registrar{% endif %}
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty">
+                <div class="empty-icon" aria-hidden="true">▦</div>
+                <h3>No hay citas para esta fecha</h3>
+                <p>Cuando se registren citas, aparecerán aquí ordenadas por hora.</p>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

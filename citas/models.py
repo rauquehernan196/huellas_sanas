@@ -6,6 +6,7 @@ class Mascota(models.Model):
     especie = models.CharField(max_length=50, verbose_name='Especie')
     raza = models.CharField(max_length=80, verbose_name='Raza')
     nombre_dueno = models.CharField(max_length=150, verbose_name='Nombre del dueño')
+    observaciones = models.TextField(blank=True, verbose_name='Observaciones')
 
     class Meta:
         verbose_name = 'Mascota'
@@ -36,6 +37,8 @@ class Cita(models.Model):
     fecha = models.DateField(verbose_name='Fecha')
     hora = models.TimeField(verbose_name='Hora')
     motivo_consulta = models.TextField(verbose_name='Motivo de consulta')
+    sintomas = models.TextField(blank=True, verbose_name='Síntomas')
+    diagnostico = models.TextField(blank=True, verbose_name='Diagnóstico')
     estado = models.CharField(
         max_length=20,
         choices=ESTADO_CHOICES,

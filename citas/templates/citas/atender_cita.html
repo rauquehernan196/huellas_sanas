@@ -1,0 +1,38 @@
+{% extends "citas/base.html" %}
+
+{% block title %}Atención de {{ cita.mascota.nombre }} | Huellas Sanas{% endblock %}
+
+{% block content %}
+    <div class="page-heading">
+        <div>
+            <div class="eyebrow">Ficha clínica · {{ cita.fecha|date:"j \\d\\e F Y" }} · {{ cita.hora|time:"H:i" }}</div>
+            <h1>Atención de {{ cita.mascota.nombre }}</h1>
+            <p class="subtitle">{{ cita.mascota.especie }}{% if cita.mascota.raza %} · {{ cita.mascota.raza }}{% endif %} · Tutor: {{ cita.mascota.nombre_dueno }}</p>
+        </div>
+    </div>
+
+    <section class="panel patient-summary" aria-label="Motivo de la cita">
+        <div class="eyebrow">Motivo de consulta</div>
+        <p>{{ cita.motivo_consulta }}</p>
+    </section>
+
+    <form class="panel form-panel clinical-form" method="post">
+        {% csrf_token %}
+        <div class="clinical-intro">
+            <h2>Notas de atención</h2>
+            <p>Registra los síntomas y el diagnóstico para conservarlos en la ficha de esta cita.</p>
+        </div>
+        {% for field in form %}
+            <div class="field clinical-field">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+            </div>
+        {% endfor %}
+        {% for error in form.non_field_errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+        <div class="form-actions">
+            <a class="button secondary" href="{% url 'agenda_diaria' %}?fecha={{ cita.fecha|date:'Y-m-d' }}">Volver a la agenda</a>
+            <button class="button" type="submit">Guardar atención</button>
+        </div>
+    </form>
+{% endblock %}
